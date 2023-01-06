@@ -11,7 +11,7 @@ using WebApplication_Training_Studio.Models;
 
 namespace WebApplication_Training_Studio.Pages.FitnessClasses
 {
-    public class EditModel : PageModel
+    public class EditModel : FitnessClassCategoriesPageModel
     {
         private readonly WebApplication_Training_Studio.Data.WebApplication_Training_StudioContext _context;
 
@@ -30,50 +30,72 @@ namespace WebApplication_Training_Studio.Pages.FitnessClasses
                 return NotFound();
             }
 
-            var fitnessclass =  await _context.FitnessClass.FirstOrDefaultAsync(m => m.ID == id);
-            if (fitnessclass == null)
+            FitnessClass = await _context.FitnessClass
+                .Include(b => b.Location)
+                .Include(b => b.FitnessClassCategories).ThenInclude(b => b.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (FitnessClass == null)
             {
                 return NotFound();
             }
-            FitnessClass = fitnessclass;
-            ViewData["TrainerID"] = new SelectList(_context.Set<Trainer>(), "ID", "LastName");
+
+
+            PopulateAssignedCategoryData(_context, FitnessClass);
+
+            var trainerList = _context.Trainer.Select(x => new
+            {
+                x.ID,
+                FullName = x.LastName + " " + x.FirstName
+            });
+
+           
+            ViewData["TrainerID"] = new SelectList(trainerList, "ID", "FullName");
             ViewData["LocationID"] = new SelectList(_context.Set<Location>(), "ID", "Name");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[]
+            selectedCategories)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(FitnessClass).State = EntityState.Modified;
 
-            try
+            var fitnessClassToUpdate = await _context.FitnessClass
+ .Include(i => i.Trainer)
+ .Include(i => i.FitnessClassCategories)
+ .ThenInclude(i => i.Category)
+ .FirstOrDefaultAsync(s => s.ID == id);
+
+
+            if (fitnessClassToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<FitnessClass>(
+ fitnessClassToUpdate,
+ "FitnessClass",
+ i => i.Name, i => i.Trainer,
+ i => i.Price, i => i.Duration, i => i.TrainerID))
+            {
+                UpdateFitnessClassCategories(_context, selectedCategories, fitnessClassToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FitnessClassExists(FitnessClass.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
-        }
 
-        private bool FitnessClassExists(int id)
-        {
-          return _context.FitnessClass.Any(e => e.ID == id);
+            UpdateFitnessClassCategories(_context, selectedCategories, fitnessClassToUpdate);
+            PopulateAssignedCategoryData(_context, fitnessClassToUpdate);
+            return Page();
+
+
         }
     }
 }

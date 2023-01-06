@@ -29,7 +29,7 @@ namespace WebApplication_Training_Studio.Models
         
         public Location? Location { get; set; }
 
-
+        public ICollection <FitnessClassCategory>? FitnessClassCategories  { get; set; }
 
     }
 }

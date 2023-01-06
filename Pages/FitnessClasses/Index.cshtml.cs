@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,15 +20,31 @@ namespace WebApplication_Training_Studio.Pages.FitnessClasses
             _context = context;
         }
 
-        public IList<FitnessClass> FitnessClass { get;set; } = default!;
+        public IList<FitnessClass> FitnessClass { get; set; } = default!;
+        public FitnessClassData FitnessClassD { get; set; }
+        public int FitnessClassID { get; set; }
+        public int CategoryID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id, int? categoryID)
         {
-            if (_context.FitnessClass != null)
+            FitnessClassD = new FitnessClassData();
+
+            FitnessClassD.FitnessClasses = await _context.FitnessClass
+             .Include(b => b.Location)
+             .Include(b => b.FitnessClassCategories)
+             .ThenInclude(b => b.Category)
+             .AsNoTracking()
+             .OrderBy(b => b.Name)
+             .ToListAsync();
+            if (id != null)
             {
-                FitnessClass = await _context.FitnessClass.Include(b => b.Trainer).ToListAsync();
-                FitnessClass = await _context.FitnessClass.Include(b => b.Location).ToListAsync();
+                FitnessClassID = id.Value;
+                FitnessClass fitnessClass= FitnessClassD.FitnessClasses
+                .Where(i => i.ID == id.Value).Single();
+                FitnessClassD.Categories = fitnessClass.FitnessClassCategories.Select(s => s.Category);
             }
         }
+
     }
 }
+

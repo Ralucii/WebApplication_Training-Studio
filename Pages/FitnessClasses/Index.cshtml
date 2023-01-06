@@ -31,13 +31,23 @@
             <th>
                 @Html.DisplayNameFor(model => model.FitnessClass[0].Location.Name)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FitnessClass[0].FitnessClassCategories)
+            </th>
 
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.FitnessClass) {
-        <tr>
+@foreach (var item in Model.FitnessClassD.FitnessClasses) {
+
+    string selectedRow = "";
+ if (item.ID == Model.FitnessClassID)
+ {
+ selectedRow = "table-success";
+ }
+ <tr class="@selectedRow">
+
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -56,6 +66,16 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Location.Name)
                 </td>
+
+                <td>
+ @{
+ foreach (var category in item.FitnessClassCategories)
+ {
+ @category.Category.ID @: @category.Category.CategoryName <br/>
+ }
+ }
+ </td>
+
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
