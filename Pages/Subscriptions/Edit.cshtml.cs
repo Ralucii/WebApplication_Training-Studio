@@ -30,14 +30,18 @@ namespace WebApplication_Training_Studio.Pages.Subscriptions
                 return NotFound();
             }
 
-            var subscription =  await _context.Subscription.FirstOrDefaultAsync(m => m.ID == id);
+            var subscription =  await _context.Subscription
+                .Include(b=>b.Member)
+                .Include(b=>b.FitnessClass)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (subscription == null)
             {
                 return NotFound();
             }
+
             Subscription = subscription;
-           ViewData["FitnessClassID"] = new SelectList(_context.FitnessClass, "ID", "ID");
-           ViewData["MemberID"] = new SelectList(_context.Member, "ID", "ID");
+           ViewData["FitnessClassID"] = new SelectList(_context.FitnessClass, "ID", "Name");
+           ViewData["MemberID"] = new SelectList(_context.Member, "ID", "FullName");
             return Page();
         }
 

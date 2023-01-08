@@ -11,6 +11,8 @@ namespace WebApplication_Training_Studio.Models
 
 
         [Display(Name = "Name of the class")]
+        [Required(ErrorMessage = "Completati obligatoriu!")]
+        [StringLength(150, MinimumLength = 3)]
         public string Name { get; set; }  
         
         public string Description { get; set; }
