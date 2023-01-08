@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication_Training_Studio.Data;
 
@@ -11,9 +12,10 @@ using WebApplication_Training_Studio.Data;
 namespace WebApplication_Training_Studio.Migrations
 {
     [DbContext(typeof(WebApplication_Training_StudioContext))]
-    partial class WebApplication_Training_StudioContextModelSnapshot : ModelSnapshot
+    [Migration("20230108132342_Subscriptions")]
+    partial class Subscriptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,60 +123,6 @@ namespace WebApplication_Training_Studio.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("WebApplication_Training_Studio.Models.Member", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Member");
-                });
-
-            modelBuilder.Entity("WebApplication_Training_Studio.Models.Subscription", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int?>("FitnessClassID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MemberID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartingDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("FitnessClassID");
-
-                    b.HasIndex("MemberID");
-
-                    b.ToTable("Subscription");
-                });
-
             modelBuilder.Entity("WebApplication_Training_Studio.Models.Trainer", b =>
                 {
                     b.Property<int>("ID")
@@ -242,21 +190,6 @@ namespace WebApplication_Training_Studio.Migrations
                     b.Navigation("FitnessClass");
                 });
 
-            modelBuilder.Entity("WebApplication_Training_Studio.Models.Subscription", b =>
-                {
-                    b.HasOne("WebApplication_Training_Studio.Models.FitnessClass", "FitnessClass")
-                        .WithMany()
-                        .HasForeignKey("FitnessClassID");
-
-                    b.HasOne("WebApplication_Training_Studio.Models.Member", "Member")
-                        .WithMany("Subscriptions")
-                        .HasForeignKey("MemberID");
-
-                    b.Navigation("FitnessClass");
-
-                    b.Navigation("Member");
-                });
-
             modelBuilder.Entity("WebApplication_Training_Studio.Models.Category", b =>
                 {
                     b.Navigation("FitnessClassCategories");
@@ -270,11 +203,6 @@ namespace WebApplication_Training_Studio.Migrations
             modelBuilder.Entity("WebApplication_Training_Studio.Models.Location", b =>
                 {
                     b.Navigation("FitnessClass");
-                });
-
-            modelBuilder.Entity("WebApplication_Training_Studio.Models.Member", b =>
-                {
-                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("WebApplication_Training_Studio.Models.Trainer", b =>

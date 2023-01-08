@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication_Training_Studio.Data;
 
@@ -11,9 +12,10 @@ using WebApplication_Training_Studio.Data;
 namespace WebApplication_Training_Studio.Migrations
 {
     [DbContext(typeof(WebApplication_Training_StudioContext))]
-    partial class WebApplication_Training_StudioContextModelSnapshot : ModelSnapshot
+    [Migration("20230108132843_MemberSubscription")]
+    partial class MemberSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

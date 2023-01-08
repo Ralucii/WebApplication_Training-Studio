@@ -21,5 +21,9 @@ namespace WebApplication_Training_Studio.Data
         public DbSet<WebApplication_Training_Studio.Models.Location> Locations { get; set; }
 
         public DbSet<WebApplication_Training_Studio.Models.Category> Category { get; set; }
+
+        public DbSet<WebApplication_Training_Studio.Models.Member> Member { get; set; }
+
+        public DbSet<WebApplication_Training_Studio.Models.Subscription> Subscription { get; set; }
     }
 }
