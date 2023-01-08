@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebApplication_Training_Studio.Data;
 using WebApplication_Training_Studio.Models;
+using WebApplication_Training_Studio.Models.ViewModels;
 
 namespace WebApplication_Training_Studio.Pages.Trainers
 {
@@ -21,11 +22,23 @@ namespace WebApplication_Training_Studio.Pages.Trainers
 
         public IList<Trainer> Trainer { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public TrainerIndexData TrainerData { get; set; }
+        public int TrainerID { get; set; }
+        public int FitnessClassID { get; set; }
+        public async Task OnGetAsync(int? id, int? fitnessClassID)
         {
-            if (_context.Trainer != null)
+            TrainerData = new TrainerIndexData();
+            TrainerData.Trainers = await _context.Trainer
+                .Include(i => i.FitnessClasses)
+                .ThenInclude(c => c.Location)
+                .OrderBy(i => i.LastName) //Nu poti face referinta dupa Full Name pentru ca nu e in baza de date
+                .ToListAsync();
+            if (id != null)
             {
-                Trainer = await _context.Trainer.ToListAsync();
+                TrainerID = id.Value;
+                Trainer trainer = TrainerData.Trainers
+                    .Where(i => i.ID == id.Value).Single();
+                TrainerData.FitnessClasses = trainer.FitnessClasses;
             }
         }
     }

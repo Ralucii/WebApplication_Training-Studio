@@ -23,7 +23,15 @@ namespace WebApplication_Training_Studio.Models
         [Display(Name = "Personal details")]
         public string Details { get; set; }
 
-    public ICollection<FitnessClass>? FitnessClass { get; set; }
+        public string? FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
+
+        public ICollection<FitnessClass>? FitnessClasses { get; set; }
 
 
     }

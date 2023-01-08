@@ -10,11 +10,27 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Class Name / Trainer Name: 
+            <input type="text" name="searchString" value="@Model.CurrentFilter"/>
+            <input type="submit" value="Search" class="btn btn-pimary"/>
+            <a asp-page="./Index">Back to full list</a>
+        </p>
+
+    </div>
+
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
+                <a asp-page="./Index" asp-rout-sortOrder="@Model.ClassNameSort">
                 @Html.DisplayNameFor(model => model.FitnessClass[0].Name)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FitnessClass[0].Description)
@@ -26,7 +42,9 @@
                 @Html.DisplayNameFor(model => model.FitnessClass[0].Duration)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FitnessClass[0].Trainer.LastName)
+                <a asp-page="./Index" asp-rout-sortOrder="@Model.TrainerSort">
+                    @Html.DisplayNameFor(model => model.FitnessClass[0].Trainer.FullName)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FitnessClass[0].Location.Name)
@@ -61,7 +79,7 @@
                 @Html.DisplayFor(modelItem => item.Duration)
             </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Trainer.LastName)
+                    @Html.DisplayFor(modelItem => item.Trainer.FullName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Location.Name)
